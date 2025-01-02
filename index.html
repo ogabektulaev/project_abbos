@@ -44,17 +44,17 @@
             background-color: #000000;
             color: #ffffff;
         }
-        .age-calculator {
+        .age-calculator, .category-checker {
             width: 100%;
             background-color: #f4f4f4;
             text-align: center;
             padding: 20px;
         }
-        .age-calculator h2 {
+        .age-calculator h2, .category-checker h2 {
             font-size: 2rem;
             margin-bottom: 20px;
         }
-        .age-calculator form {
+        form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -70,7 +70,7 @@
             flex-direction: column;
             align-items: center;
         }
-        .age-calculator input {
+        input, select {
             margin: 5px;
             padding: 10px;
             font-size: 1rem;
@@ -78,7 +78,7 @@
             border-radius: 5px;
             width: 200px;
         }
-        .age-calculator button {
+        button {
             margin-top: 10px;
             padding: 10px 20px;
             font-size: 1rem;
@@ -88,11 +88,11 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .age-calculator button:hover {
+        button:hover {
             background-color: #444444;
         }
 
-        #result {
+        #result, #category-result {
             font-family: 'Courier New', monospace;
             font-size: 1.5rem;
         }
@@ -108,26 +108,26 @@
             <h1>Welcome, Abbos Nazarovich!</h1>
             <div style="margin-top: 120px;">
                 <a href="#age-calculator" id="ageCalculatorLink">Graduation Calculator</a>
-                <!-- Future menu options will be added here -->
+                <a href="#category-checker" id="categoryCheckerLink">Category Checker</a>
             </div>
         </div>
     </section>
 
     <section id="age-calculator" class="age-calculator">
-        <h2>Yosh hisoblagich</h2>
+        <h2>Graduation Calculator</h2>
         <form onsubmit="calculateGraduationAge(event)">
             <div class="input-group">
                 <div>
-                    <label for="dob-day">Tug'ilgan sana</label>
-                    <input type="number" id="dob-day" placeholder="Kun (1-31)" min="1" max="31" required>
-                    <input type="number" id="dob-month" placeholder="Oy (1-12)" min="1" max="12" required>
-                    <input type="number" id="dob-year" placeholder="Yil (1900-2025)" min="1900" max="2025" required>
+                    <label for="dob-day">Date of Birth</label>
+                    <input type="number" id="dob-day" placeholder="Day (1-31)" min="1" max="31" required>
+                    <input type="number" id="dob-month" placeholder="Month (1-12)" min="1" max="12" required>
+                    <input type="number" id="dob-year" placeholder="Year (1900-2024)" min="1900" max="2024" required>
                 </div>
                 <div>
-                    <label for="grad-day">O'qishni tugatgan sana</label>
-                    <input type="number" id="grad-day" placeholder="Kun (1-31)" min="1" max="31" required>
-                    <input type="number" id="grad-month" placeholder="Oy (1-12)" min="1" max="12" required>
-                    <input type="number" id="grad-year" placeholder="Yil (1900-2025)" min="1900" max="2025" required>
+                    <label for="grad-day">Graduation Date</label>
+                    <input type="number" id="grad-day" placeholder="Day (1-31)" min="1" max="31" required>
+                    <input type="number" id="grad-month" placeholder="Month (1-12)" min="1" max="12" required>
+                    <input type="number" id="grad-year" placeholder="Year (1900-2024)" min="1900" max="2024" required>
                 </div>
             </div>
             <button type="submit">Calculate</button>
@@ -135,11 +135,46 @@
         <p id="result"></p>
     </section>
 
+    <section id="category-checker" class="category-checker">
+        <h2>Category Checker</h2>
+        <form onsubmit="checkCategory(event)">
+            <div class="input-group">
+                <div>
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="start-date" required>
+                </div>
+                <div>
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="end-date" required>
+                </div>
+            </div>
+            <label for="category">Select Category</label>
+            <select id="category" required>
+                <option value="A">Category A</option>
+                <option value="B">Category B</option>
+                <option value="C">Category C</option>
+                <option value="B and C">Category B and C</option>
+            </select>
+            <button type="submit">Check</button>
+        </form>
+        <p id="category-result"></p>
+    </section>
+
     <script>
         // Smooth Scroll Function
         document.getElementById('ageCalculatorLink').addEventListener('click', function (event) {
             event.preventDefault();
             const target = document.getElementById('age-calculator');
+            
+            window.scrollTo({
+                top: target.offsetTop,
+                behavior: 'smooth'
+            });
+        });
+
+        document.getElementById('categoryCheckerLink').addEventListener('click', function (event) {
+            event.preventDefault();
+            const target = document.getElementById('category-checker');
             
             window.scrollTo({
                 top: target.offsetTop,
@@ -175,7 +210,46 @@
             }
 
             // Wrap numbers in bold
-            document.getElementById('result').innerHTML = `<span class="bold-number">${ageYears}</span> yosh va <span class="bold-number">${ageMonths}</span> oy.`;
+            document.getElementById('result').innerHTML = `You were <span class="bold-number">${ageYears}</span> years and <span class="bold-number">${ageMonths}</span> months old when you graduated.`;
+        }
+
+        function checkCategory(event) {
+            event.preventDefault();
+
+            const startDate = new Date(document.getElementById('start-date').value);
+            const endDate = new Date(document.getElementById('end-date').value);
+            const category = document.getElementById('category').value;
+
+            if (startDate > endDate) {
+                document.getElementById('category-result').innerHTML = 'End date cannot be before start date!';
+                return;
+            }
+
+            const daysStudied = (endDate - startDate) / (1000 * 60 * 60 * 24);
+            const weeksStudied = daysStudied / 7;
+
+            let isValid = false;
+
+            switch (category) {
+                case 'A':
+                    isValid = daysStudied >= 63 || weeksStudied >= 9;
+                    break;
+                case 'B':
+                    isValid = daysStudied >= 126 || weeksStudied >= 18;
+                    break;
+                case 'C':
+                    isValid = daysStudied >= 154 || weeksStudied >= 22;
+                    break;
+                case 'B and C':
+                    isValid = daysStudied >= 168 || weeksStudied >= 24;
+                    break;
+            }
+
+            if (isValid) {
+                document.getElementById('category-result').innerHTML = `Congratulations! You meet the requirements for Category <span class="bold-number">${category}</span>. `;
+            } else {
+                document.getElementById('category-result').innerHTML = `Unfortunately, you do not meet the requirements for Category <span class="bold-number">${category}</span>.`;
+            }
         }
     </script>
 </body>
