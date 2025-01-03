@@ -150,62 +150,17 @@
       <h2>Bitirish Kalkulyatori</h2>
       <form onsubmit="calculateGraduationAge(event)">
         <div class="input-group">
-          <div>
-            <label for="dob-day">Tug'ilgan sana</label>
-            <input
-              type="number"
-              id="dob-day"
-              placeholder="Kun (1-31)"
-              min="1"
-              max="31"
-              required
-            />
-            <input
-              type="number"
-              id="dob-month"
-              placeholder="Oy (1-12)"
-              min="1"
-              max="12"
-              required
-            />
-            <input
-              type="number"
-              id="dob-year"
-              placeholder="Yil (1900-2024)"
-              min="1900"
-              max="2024"
-              required
-            />
-          </div>
-          <div>
-            <label for="grad-day">Bitirish sanasi</label>
-            <input
-              type="number"
-              id="grad-day"
-              placeholder="Kun (1-31)"
-              min="1"
-              max="31"
-              required
-            />
-            <input
-              type="number"
-              id="grad-month"
-              placeholder="Oy (1-12)"
-              min="1"
-              max="12"
-              required
-            />
-            <input
-              type="number"
-              id="grad-year"
-              placeholder="Yil (1900-2024)"
-              min="1900"
-              max="2024"
-              required
-            />
-          </div>
+            <div>
+                <label for="dob-date">Boshlanish sanasi</label>
+                <input type="date" id="dob-date" required />
+              </div>
+              <div>
+                <label for="grad-date">Tugash sanasi</label>
+                <input type="date" id="grad-date" required />
+              </div>
         </div>
         <button type="submit">Hisoblash</button>
+        <button type="button" onclick="clearFields()">Tozalash</button>
       </form>
       <p id="result"></p>
     </section>
@@ -233,6 +188,7 @@
           <option value="B and C">Toifa B va C</option>
         </select>
         <button type="submit">Tekshirish</button>
+        <button type="button" onclick="clearFields()">Tozalash</button>
       </form>
       <p id="category-result"></p>
 
@@ -280,6 +236,16 @@
     </section>
 
     <script>
+
+    function clearFields() {
+        // Clear date inputs
+        document.getElementById('start-date').value = '';
+        document.getElementById('end-date').value = '';
+        document.getElementById('dob-date').value = '';
+        document.getElementById('grad-date').value = '';
+    }
+
+
       // Smooth Scroll Function
       document
         .getElementById("ageCalculatorLink")
@@ -308,16 +274,16 @@
       function calculateGraduationAge(event) {
         event.preventDefault();
 
-        const dobDay = parseInt(document.getElementById("dob-day").value);
-        const dobMonth = parseInt(document.getElementById("dob-month").value);
-        const dobYear = parseInt(document.getElementById("dob-year").value);
+        // const dobDay = parseInt(document.getElementById("dob-day").value);
+        // const dobMonth = parseInt(document.getElementById("dob-month").value);
+        // const dobYear = parseInt(document.getElementById("dob-year").value);
 
-        const gradDay = parseInt(document.getElementById("grad-day").value);
-        const gradMonth = parseInt(document.getElementById("grad-month").value);
-        const gradYear = parseInt(document.getElementById("grad-year").value);
+        // const gradDay = parseInt(document.getElementById("grad-day").value);
+        // const gradMonth = parseInt(document.getElementById("grad-month").value);
+        // const gradYear = parseInt(document.getElementById("grad-year").value);
 
-        const dob = new Date(dobYear, dobMonth - 1, dobDay);
-        const gradDate = new Date(gradYear, gradMonth - 1, gradDay);
+        const dob = new Date(document.getElementById("dob-date").value);
+        const gradDate = new Date(document.getElementById("grad-date").value);
 
         if (dob > gradDate) {
           document.getElementById("result").innerHTML =
