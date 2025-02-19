@@ -22,9 +22,44 @@
         align-items: center;
       }
 
+      /* Login section */
+      #login {
+        background-color: #f5f3f0;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .login-container {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .login-container input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .login-container button {
+        width: 100%;
+        padding: 10px;
+        background-color: #000000;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .login-container button:hover {
+        background-color: #444444;
+      }
+
       /* Welcome section - keeping white background */
       #welcome {
         background-color: #ffffff;
+        display: none; /* Hidden by default */
       }
 
       .menu-container h1 {
@@ -129,65 +164,42 @@
       .bold-number {
         font-weight: bold;
       }
-      @media (max-width: 600px) {
-        .input-group {
-          flex-direction: column;
-        }
+
+      #logoutButton {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: none; /* Hidden by default */
       }
     </style>
   </head>
-
-  <title>Homepage</title>
-  <!-- Add Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
-
-  <script>
-    // Initialize Firebase with your project's config
-    var firebaseConfig = {
-      apiKey: "AIzaSyCIShLaGint52snMfp6txUDLH3-qqbvJxA",
-      authDomain: "test-abbos.firebaseapp.com",
-      projectId: "test-abbos",
-      storageBucket: "test-abbos.firebasestorage.app",
-      messagingSenderId: "878512105415",
-      appId: "1:878512105415:web:4e574b43087f2ab8349be2",
-      measurementId: "G-QFN9JGXF9E"
-    };
-    firebase.initializeApp(firebaseConfig);
-
-    // Function to check if a user is logged in or not
-    function checkAuthState() {
-      firebase.auth().onAuthStateChanged(function(user) {
-        if (!user) {
-          // User is not signed in, redirect to the login page
-          window.location.href = "login.html";
-        }
-      });
-    }
-  </script>
-</head>
-<body onload="checkAuthState()">
-
-
-
-
-
-
   <body>
+    <!-- Login Section -->
+    <section id="login">
+      <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+          <input type="email" id="email" placeholder="Email" required />
+          <input type="password" id="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p id="loginError" style="color: red;"></p>
+      </div>
+    </section>
+
+    <!-- Welcome Section -->
     <section id="welcome">
       <div class="menu-container">
         <h1>Xush kelibsiz, Abbos Nazarovich!</h1>
         <div style="margin-top: 120px">
-          <a href="#age-calculator" id="ageCalculatorLink"
-            >Bitirish Kalkulyatori</a
-          >
-          <a href="#category-checker" id="categoryCheckerLink"
-            >Toifa Tekshiruvchisi</a
-          >
+          <a href="#age-calculator" id="ageCalculatorLink">Bitirish Kalkulyatori</a>
+          <a href="#category-checker" id="categoryCheckerLink">Toifa Tekshiruvchisi</a>
         </div>
       </div>
+      <button id="logoutButton">Logout</button>
     </section>
 
+    <!-- Age Calculator Section -->
     <section id="age-calculator" class="age-calculator">
       <h2>Bitirish Kalkulyatori</h2>
       <form onsubmit="calculateGraduationAge(event)">
@@ -202,11 +214,12 @@
           </div>
         </div>
         <button type="submit">Hisoblash</button>
-        <button type="button" onclick="clearAgeFields()">Tozalash</button>
+        <button type="button" onclick="clearFields()">Tozalash</button>
       </form>
       <p id="result"></p>
     </section>
 
+    <!-- Category Checker Section -->
     <section id="category-checker" class="category-checker">
       <h2>Toifa Tekshiruvchisi</h2>
       <br />
@@ -230,7 +243,7 @@
           <option value="B and C">Toifa B va C</option>
         </select>
         <button type="submit">Tekshirish</button>
-        <button type="button" onclick="clearCategoryFields()">Tozalash</button>
+        <button type="button" onclick="clearFields()">Tozalash</button>
       </form>
       <p id="category-result"></p>
 
@@ -277,18 +290,84 @@
       </table>
     </section>
 
+    <!-- Firebase and Custom Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
     <script>
-      function clearAgeFields() {
-        document.getElementById("dob-date").value = "";
-        document.getElementById("grad-date").value = "";
-        document.getElementById("result").innerHTML = "";
-      }
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCIShLaGint52snMfp6txUDLH3-qqbvJxA",
+        authDomain: "test-abbos.firebaseapp.com",
+        projectId: "test-abbos",
+        storageBucket: "test-abbos.appspot.com",
+        messagingSenderId: "878512105415",
+        appId: "1:878512105415:web:4e574b43087f2ab8349be2",
+        measurementId: "G-QFN9JGXF9E",
+      };
 
-      function clearCategoryFields() {
+      // Initialize Firebase
+      const app = firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+
+      // Login functionality
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        auth
+          .signInWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            // Login successful
+            const user = userCredential.user;
+            console.log("Logged in as:", user.email);
+            document.getElementById("loginError").textContent = ""; // Clear error message
+            // Hide login form and show main content
+            document.getElementById("login").style.display = "none";
+            document.getElementById("welcome").style.display = "block";
+            document.getElementById("logoutButton").style.display = "block";
+          })
+          .catch((error) => {
+            // Handle errors
+            const errorMessage = error.message;
+            document.getElementById("loginError").textContent = errorMessage;
+          });
+      });
+
+      // Logout functionality
+      document.getElementById("logoutButton").addEventListener("click", () => {
+        auth.signOut().then(() => {
+          console.log("User signed out");
+          // Show login form and hide main content
+          document.getElementById("login").style.display = "block";
+          document.getElementById("welcome").style.display = "none";
+          document.getElementById("logoutButton").style.display = "none";
+        });
+      });
+
+      // Check authentication state
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          // User is logged in
+          console.log("User is logged in:", user.email);
+          document.getElementById("login").style.display = "none";
+          document.getElementById("welcome").style.display = "block";
+          document.getElementById("logoutButton").style.display = "block";
+        } else {
+          // User is not logged in
+          console.log("User is not logged in");
+          document.getElementById("login").style.display = "block";
+          document.getElementById("welcome").style.display = "none";
+          document.getElementById("logoutButton").style.display = "none";
+        }
+      });
+
+      // Existing functions (unchanged)
+      function clearFields() {
         document.getElementById("start-date").value = "";
         document.getElementById("end-date").value = "";
-        document.getElementById("category").selectedIndex = 0;
-        document.getElementById("category-result").innerHTML = "";
+        document.getElementById("dob-date").value = "";
+        document.getElementById("grad-date").value = "";
       }
 
       // Smooth Scroll Function
@@ -319,14 +398,6 @@
       function calculateGraduationAge(event) {
         event.preventDefault();
 
-        // const dobDay = parseInt(document.getElementById("dob-day").value);
-        // const dobMonth = parseInt(document.getElementById("dob-month").value);
-        // const dobYear = parseInt(document.getElementById("dob-year").value);
-
-        // const gradDay = parseInt(document.getElementById("grad-day").value);
-        // const gradMonth = parseInt(document.getElementById("grad-month").value);
-        // const gradYear = parseInt(document.getElementById("grad-year").value);
-
         const dob = new Date(document.getElementById("dob-date").value);
         const gradDate = new Date(document.getElementById("grad-date").value);
 
@@ -336,21 +407,13 @@
           return;
         }
 
-        //Deepseek
         let ageYears = gradDate.getFullYear() - dob.getFullYear();
         let ageMonths = gradDate.getMonth() - dob.getMonth();
 
-        // Adjust for day difference
-        if (gradDay < dobDay) {
-          ageMonths--;
-        }
-
-        // Handle negative months
         if (ageMonths < 0) {
           ageYears--;
           ageMonths += 12;
         }
-        //Deepseek end
 
         document.getElementById(
           "result"
