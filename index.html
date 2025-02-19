@@ -129,8 +129,50 @@
       .bold-number {
         font-weight: bold;
       }
+      @media (max-width: 600px) {
+        .input-group {
+          flex-direction: column;
+        }
+      }
     </style>
   </head>
+
+  <title>Homepage</title>
+  <!-- Add Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+
+  <script>
+    // Initialize Firebase with your project's config
+    var firebaseConfig = {
+      apiKey: "AIzaSyCIShLaGint52snMfp6txUDLH3-qqbvJxA",
+      authDomain: "test-abbos.firebaseapp.com",
+      projectId: "test-abbos",
+      storageBucket: "test-abbos.firebasestorage.app",
+      messagingSenderId: "878512105415",
+      appId: "1:878512105415:web:4e574b43087f2ab8349be2",
+      measurementId: "G-QFN9JGXF9E"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Function to check if a user is logged in or not
+    function checkAuthState() {
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (!user) {
+          // User is not signed in, redirect to the login page
+          window.location.href = "login.html";
+        }
+      });
+    }
+  </script>
+</head>
+<body onload="checkAuthState()">
+
+
+
+
+
+
   <body>
     <section id="welcome">
       <div class="menu-container">
@@ -150,17 +192,17 @@
       <h2>Bitirish Kalkulyatori</h2>
       <form onsubmit="calculateGraduationAge(event)">
         <div class="input-group">
-            <div>
-                <label for="dob-date">Boshlanish sanasi</label>
-                <input type="date" id="dob-date" required />
-              </div>
-              <div>
-                <label for="grad-date">Tugash sanasi</label>
-                <input type="date" id="grad-date" required />
-              </div>
+          <div>
+            <label for="dob-date">Boshlanish sanasi</label>
+            <input type="date" id="dob-date" required />
+          </div>
+          <div>
+            <label for="grad-date">Tugash sanasi</label>
+            <input type="date" id="grad-date" required />
+          </div>
         </div>
         <button type="submit">Hisoblash</button>
-        <button type="button" onclick="clearFields()">Tozalash</button>
+        <button type="button" onclick="clearAgeFields()">Tozalash</button>
       </form>
       <p id="result"></p>
     </section>
@@ -188,7 +230,7 @@
           <option value="B and C">Toifa B va C</option>
         </select>
         <button type="submit">Tekshirish</button>
-        <button type="button" onclick="clearFields()">Tozalash</button>
+        <button type="button" onclick="clearCategoryFields()">Tozalash</button>
       </form>
       <p id="category-result"></p>
 
@@ -236,15 +278,18 @@
     </section>
 
     <script>
+      function clearAgeFields() {
+        document.getElementById("dob-date").value = "";
+        document.getElementById("grad-date").value = "";
+        document.getElementById("result").innerHTML = "";
+      }
 
-    function clearFields() {
-        // Clear date inputs
-        document.getElementById('start-date').value = '';
-        document.getElementById('end-date').value = '';
-        document.getElementById('dob-date').value = '';
-        document.getElementById('grad-date').value = '';
-    }
-
+      function clearCategoryFields() {
+        document.getElementById("start-date").value = "";
+        document.getElementById("end-date").value = "";
+        document.getElementById("category").selectedIndex = 0;
+        document.getElementById("category-result").innerHTML = "";
+      }
 
       // Smooth Scroll Function
       document
@@ -291,13 +336,21 @@
           return;
         }
 
+        //Deepseek
         let ageYears = gradDate.getFullYear() - dob.getFullYear();
         let ageMonths = gradDate.getMonth() - dob.getMonth();
 
+        // Adjust for day difference
+        if (gradDay < dobDay) {
+          ageMonths--;
+        }
+
+        // Handle negative months
         if (ageMonths < 0) {
           ageYears--;
           ageMonths += 12;
         }
+        //Deepseek end
 
         document.getElementById(
           "result"
