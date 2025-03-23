@@ -34,7 +34,7 @@ loginForm.addEventListener("submit", (e) => {
   signInWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Successful login: redirect to welcome page
-      window.location.href = "old-works.html";
+      window.location.href = "main.html";
     })
     .catch((error) => {
       errorMessage.textContent = error.message;
