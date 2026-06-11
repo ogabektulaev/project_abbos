@@ -26,7 +26,7 @@ const logoutButton = document.getElementById("logout-button");
 // Check authentication state and update UI accordingly
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    welcomeMessage.textContent = `Welcome, ${user.email}!`;
+    //welcomeMessage.textContent = `Welcome, ${user.email}!`;
   } else {
     // If no user is logged in, redirect to login page
     window.location.href = "index.html";
